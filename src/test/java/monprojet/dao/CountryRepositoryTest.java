@@ -1,5 +1,6 @@
 package monprojet.dao;
 
+import monprojet.dto.PopPays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import monprojet.entity.*;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,8 +41,28 @@ public class CountryRepositoryTest {
     void onSaitCompterLesEnregistrements() {
         log.info("On compte les enregistrements de la table 'Country'");
         int combienDePaysDansLeJeuDeTest = 3 + 1; // 3 dans data.sql, 1 dans test-data.sql
-        long nombre = countryDAO.count();
-        assertEquals(combienDePaysDansLeJeuDeTest, nombre, "On doit trouver 4 pays" );
+        long nb = countryDAO.count();
+        assertEquals(combienDePaysDansLeJeuDeTest, nb, "On doit trouver 4 pays" );
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void populationPaysTest(){
+        log.info("On compte les habitants du pays avec id_country 1. Il n'y a que Paris comme pays avec cet id_country. Paris a 12 millions d'habitants.");
+        assertEquals( 12 , countryDAO.popPourPays(1));
+
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void listPopTest(){
+        assertEquals(3, countryDAO.popParPays().size());
+    }
+
+    @Test
+    @Sql("test-data.sql")
+    void listPopTestBis(){
+        assertEquals(12, countryDAO.popParPays().get(0).getPopulation());
     }
 
 }
